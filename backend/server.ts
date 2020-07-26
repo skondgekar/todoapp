@@ -6,8 +6,10 @@ const PORT = 8085;
 
 app.get("/", (req: Request, res: Response) => {
   console.log(req.query);
-  var sum = (+req.query.num1!) + (+req.query.num2!)
-  res.send("Sum is "+ sum);
+  var dob: string = req.query.dob?.toString() || "";
+  var luckeyNumber = 0;
+
+  res.send("Sum is " + luckeyNumber);
 });
 
 app.listen(PORT, () => {
