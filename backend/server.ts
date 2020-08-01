@@ -34,19 +34,52 @@ app.get("/addToDo", (req: Request, res: Response) => {
   return;
 });
 
-app.get("/test", (req: Request, res: Response) => {
-  var nishmita = new Human();
-  nishmita.name = "Nishmita";
-  res.send(nishmita.swim());
+app.get("/getToDo", async (req: Request, res: Response) => {
+  const UserName = req.query.UserName!;
+  // _cgStore.GetTodoForUser(UserName.toString(),(todoList: Array<cgToDo>)=>{
+  //   res.json(todoList);
+  // });
+
+  var todoList = await _cgStore.getToDoForusersAsync(UserName.toString());
+  res.json(todoList);
+  return;
 });
 
-export class Human {
-  name: string = "";
-  swim() {
-    return this.name + " Swimming";
+app.get("/toggleTodo", async (req: Request, res: Response) => {
+  // const UserName = req.query.UserName;
+  // const ToDoDescription = req.query.ToDoDescription;
+  const { UserName, ToDoDescription } = req.query;
+  if (UserName === undefined || ToDoDescription === undefined) {
+    res.send("Username or todo description cannot be undefined");
+    return;
   }
-}
 
+  const success = await _cgStore.toggleTodo(
+    UserName.toString(),
+    ToDoDescription.toString()
+  );
+
+  res.send(success);
+  return;
+});
+
+app.get("/deleteToDo", async (req: Request, res: Response) => {
+  // const UserName = req.query.UserName;
+  // const ToDoDescription = req.query.ToDoDescription;
+  const { UserName, ToDoDescription } = req.query;
+  if (UserName === undefined || ToDoDescription === undefined) {
+    res.send("Username or todo description cannot be undefined");
+    return;
+  }
+
+  const success = await _cgStore.deleteToDo(
+    UserName.toString(),
+    ToDoDescription.toString()
+  );
+
+  res.send(success);
+  return;
+});
 
 app.listen(PORT, () => {
   console.log("Listening on ", PORT);
